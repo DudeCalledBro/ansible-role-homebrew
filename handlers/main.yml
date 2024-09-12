@@ -1,0 +1,4 @@
+- name: Gather ansible package manager facts
+  ansible.builtin.setup:
+    filter: ansible_pkg_mgr
+  listen: update package manager facts

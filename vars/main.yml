@@ -1,0 +1,9 @@
+# homebrew base directory
+_homebrew_prefix:
+  arm64: /opt/homebrew
+homebrew_prefix: "{{ _homebrew_prefix[ansible_machine] }}"
+
+# homebrew repository path
+_homebrew_repository:
+  arm64: "{{ homebrew_prefix }}"
+homebrew_repository: "{{ _homebrew_repository[ansible_machine] }}"

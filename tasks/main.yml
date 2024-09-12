@@ -1,0 +1,56 @@
+- name: Determine homebrew ownership variables
+  ansible.builtin.set_fact:
+    homebrew_user: "{{ homebrew_user | default(ansible_user_id) }}"
+    homebrew_group: "{{ homebrew_group | default(ansible_user_gid) }}"
+
+- name: Create homebrew base directory
+  ansible.builtin.file:
+    path: "{{ homebrew_prefix }}"
+    owner: "{{ homebrew_user }}"
+    state: directory
+    mode: 0755
+  become: true
+  notify: update package manager facts
+
+- name: Create homebrew repository directory
+  ansible.builtin.file:
+    path: "{{ homebrew_repository }}"
+    owner: "{{ homebrew_user }}"
+    group: "{{ homebrew_group }}"
+    state: directory
+    mode: 0755
+  become: true
+  notify: update package manager facts
+
+- name: Clone homebrew repository
+  ansible.builtin.git:
+    repo: "{{ homebrew_repo }}"
+    dest: "{{ homebrew_repository }}"
+    update: "{{ homebrew_repo_update }}"
+    version: "{{ homebrew_repo_version }}"
+  become: true
+  become_user: "{{ homebrew_user }}"
+  notify: update package manager facts
+
+- name: Update homebrew repository permissions
+  ansible.builtin.file:
+    path: "{{ homebrew_repository }}"
+    owner: "{{ homebrew_user }}"
+    group: "{{ homebrew_group }}"
+    recurse: true
+    follow: false
+  become: true
+  notify: update package manager facts
+
+- name: Setup homebrew shell completion
+  ansible.builtin.lineinfile:
+    path: "{{ item }}"
+    line: 'eval "$({{ homebrew_repository }}/bin/brew shellenv)"'
+    owner: "{{ homebrew_user }}"
+    group: "{{ homebrew_group }}"
+    create: true
+  become: true
+  become_user: "{{ homebrew_user }}"
+  loop:
+  - "{{ ansible_user_dir }}/.bash_profile"
+  - "{{ ansible_user_dir }}/.zprofile"

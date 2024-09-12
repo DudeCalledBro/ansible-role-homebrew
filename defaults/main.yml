@@ -1,0 +1,4 @@
+# Homebrew Git Repository
+homebrew_repo: https://github.com/Homebrew/brew.git
+homebrew_repo_version: master
+homebrew_repo_update: false
