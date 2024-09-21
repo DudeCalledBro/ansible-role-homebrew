@@ -2,3 +2,13 @@
 homebrew_repo: https://github.com/Homebrew/brew.git
 homebrew_repo_version: master
 homebrew_repo_update: false
+
+# Homebrew Packages
+homebrew_packages: []
+# - name: bash-completion
+#   state: present
+
+# Homebrew Cask Packages
+homebrew_packages_cask: []
+# - name: firefox
+#   state: present

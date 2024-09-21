@@ -16,3 +16,16 @@ argument_specs:
         type: bool
         required: true
         description: "Enable Homebrew Git Repository Updates."
+      homebrew_packages:
+        type: list
+        elements: dict
+        required: false
+        options:
+          name:
+            type: str
+            required: true
+            description: "Name of the brew package."
+          state:
+            type: str
+            required: true
+            description: "State of the brew package."

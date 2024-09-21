@@ -10,7 +10,6 @@
     state: directory
     mode: 0755
   become: true
-  notify: update package manager facts
 
 - name: Create homebrew repository directory
   ansible.builtin.file:
@@ -20,7 +19,6 @@
     state: directory
     mode: 0755
   become: true
-  notify: update package manager facts
 
 - name: Clone homebrew repository
   ansible.builtin.git:
@@ -30,7 +28,6 @@
     version: "{{ homebrew_repo_version }}"
   become: true
   become_user: "{{ homebrew_user }}"
-  notify: update package manager facts
 
 - name: Update homebrew repository permissions
   ansible.builtin.file:
@@ -40,7 +37,6 @@
     recurse: true
     follow: false
   become: true
-  notify: update package manager facts
 
 - name: Setup homebrew shell completion
   ansible.builtin.lineinfile:
@@ -54,3 +50,28 @@
   loop:
   - "{{ ansible_user_dir }}/.bash_profile"
   - "{{ ansible_user_dir }}/.zprofile"
+
+- name: Gather ansible package manager facts
+  ansible.builtin.setup:
+    filter: ansible_pkg_mgr
+  listen: update package manager facts
+
+- name: Setup homebrew packages
+  when: homebrew_packages and homebrew_packages | length
+  community.general.homebrew:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default(omit, true) }}"
+  loop: "{{ homebrew_packages }}"
+  loop_control:
+    label: "{{ item.name }}"
+  become: false
+
+- name: Setup homebrew cask packages
+  when: homebrew_packages_cask and homebrew_packages_cask | length
+  community.general.homebrew_cask:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default(omit, true) }}"
+  loop: "{{ homebrew_packages_cask }}"
+  loop_control:
+    label: "{{ item.name }}"
+  become: false

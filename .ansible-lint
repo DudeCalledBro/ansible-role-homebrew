@@ -2,4 +2,6 @@
 # Ansible managed
 #
 skip_list:
-- 'role-name'
+- risky-file-permissions
+- role-name
+- schema[meta]
