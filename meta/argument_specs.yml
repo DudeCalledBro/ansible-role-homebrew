@@ -27,5 +27,5 @@ argument_specs:
             description: "Name of the brew package."
           state:
             type: str
-            required: true
+            required: false
             description: "State of the brew package."
